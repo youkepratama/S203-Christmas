@@ -57,7 +57,7 @@ const Home: React.FC = () => {
             </div>
             <div>
               <h3 className="font-serif font-bold text-lg text-primary mb-1">Date & Time</h3>
-              <p className="text-gray-600">December 24th, 7:00 PM</p>
+              <p className="text-gray-600">December 12, 2025 at 12:00 PM</p>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
             </div>
             <div>
               <h3 className="font-serif font-bold text-lg text-primary mb-1">Venue</h3>
-              <p className="text-gray-600">S203 Main Hall</p>
+              <p className="text-gray-600">AX305</p>
             </div>
           </div>
 

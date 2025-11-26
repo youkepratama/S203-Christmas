@@ -12,11 +12,11 @@ const Countdown: React.FC = () => {
     const calculateTimeLeft = () => {
       const now = new Date();
       const currentYear = now.getFullYear();
-      let targetDate = new Date(`December 24, ${currentYear} 19:00:00`);
+      let targetDate = new Date(`December 12, ${currentYear} 12:00:00`);
 
       // If already past this year's date, aim for next year
       if (now.getTime() > targetDate.getTime()) {
-        targetDate = new Date(`December 24, ${currentYear + 1} 19:00:00`);
+        targetDate = new Date(`December 12, ${currentYear + 1} 12:00:00`);
       }
 
       const difference = targetDate.getTime() - now.getTime();

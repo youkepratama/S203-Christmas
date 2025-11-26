@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle, Snowflake } from 'lucide-react';
+import { supabase } from '../supabaseClient';
 import { RSVPFormData } from '../types';
 
 const RSVP: React.FC = () => {
@@ -10,14 +11,41 @@ const RSVP: React.FC = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.fullName && formData.email && formData.attendance) {
-      // Simulate API call
-      setTimeout(() => {
-        setIsSubmitted(true);
-      }, 500);
+    setError(null);
+
+    if (!formData.fullName || !formData.email || !formData.attendance) {
+      setError('Please complete all fields before submitting.');
+      return;
+    }
+
+    if (!supabase) {
+      setError('Supabase belum dikonfigurasi. Cek VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error: insertError } = await supabase.from('rsvps').insert({
+        full_name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        attendance: formData.attendance,
+      });
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      setIsSubmitted(true);
+      setFormData({ fullName: '', email: '', attendance: null });
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to submit RSVP. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -62,6 +90,12 @@ const RSVP: React.FC = () => {
           onSubmit={handleSubmit}
           className="bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-gray-100 space-y-8"
         >
+          {error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-6">
             <div className="space-y-2">
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
@@ -137,9 +171,15 @@ const RSVP: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transform active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
+            disabled={
+              isSubmitting ||
+              !formData.fullName.trim() ||
+              !formData.email.trim() ||
+              !formData.attendance
+            }
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transform active:scale-[0.98] transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <span>Submit RSVP</span>
+            <span>{isSubmitting ? 'Submitting...' : 'Submit RSVP'}</span>
             <Send size={20} />
           </button>
         </form>
