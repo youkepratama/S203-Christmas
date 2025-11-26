@@ -3,7 +3,7 @@ import { Volume2, VolumeX, Play, Pause, ChevronDown, ChevronUp } from 'lucide-re
 
 const BackgroundAudio: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.6);
   const [isOpen, setIsOpen] = useState(true);
@@ -15,31 +15,6 @@ const BackgroundAudio: React.FC = () => {
     setIsMuted(el.muted || el.volume === 0);
     setVolume(el.volume);
   };
-
-  const attemptPlay = () => {
-    const el = audioRef.current;
-    if (!el) return;
-    el.volume = volume;
-    el.muted = isMuted;
-    el.play().then(syncStateFromAudio).catch(() => {
-      const onFirstInteraction = () => {
-        el.play().finally(() => {
-          syncStateFromAudio();
-          document.removeEventListener('pointerdown', onFirstInteraction);
-          document.removeEventListener('keydown', onFirstInteraction);
-          document.removeEventListener('touchstart', onFirstInteraction);
-        });
-      };
-      document.addEventListener('pointerdown', onFirstInteraction, { once: true });
-      document.addEventListener('keydown', onFirstInteraction, { once: true });
-      document.addEventListener('touchstart', onFirstInteraction, { once: true });
-    });
-  };
-
-  useEffect(() => {
-    attemptPlay();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -95,7 +70,6 @@ const BackgroundAudio: React.FC = () => {
       <audio
         ref={audioRef}
         src="/last-christmas.mp3"
-        autoPlay
         loop
         preload="auto"
         playsInline
