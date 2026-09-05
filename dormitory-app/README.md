@@ -15,24 +15,51 @@ dormitory-app/
   client/   React + Vite + TypeScript + Tailwind CSS
 ```
 
-## Menjalankan secara lokal
+## Menjalankan di komputer lokal Anda
 
-1. Backend (port 4000):
+**Prasyarat**: [Node.js](https://nodejs.org) versi 20 atau lebih baru sudah
+terpasang di komputer Anda (cek dengan `node -v` di terminal).
+
+1. Ambil kode ini ke komputer Anda (clone repositori atau unduh ZIP dari
+   GitHub), lalu masuk ke folder `dormitory-app`:
    ```bash
-   cd server
-   npm install
+   cd dormitory-app
+   ```
+2. Pasang semua dependensi (sekali saja, atau setiap kali ada perubahan
+   dependensi):
+   ```bash
+   npm run install:all
+   ```
+3. Jalankan backend dan frontend sekaligus dengan satu perintah:
+   ```bash
    npm run dev
    ```
-   Database SQLite dibuat otomatis di `server/data/dormitory.db` beserta akun
-   dan data contoh (lihat bagian Akun Demo).
+   Backend akan aktif di `http://localhost:4000` dan frontend di
+   `http://localhost:5173` (dengan proxy `/api` otomatis ke backend).
+4. Buka `http://localhost:5173` di peramban Anda, lalu masuk memakai salah
+   satu akun demo di bawah. Tekan `Ctrl+C` di terminal untuk menghentikan
+   keduanya.
 
-2. Frontend (port 5173, dengan proxy `/api` ke backend):
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   ```
-   Buka `http://localhost:5173`.
+Database SQLite dibuat otomatis di `server/data/dormitory.db` beserta akun
+dan data contoh saat backend pertama kali dijalankan (lihat bagian Akun Demo).
+Data ini tersimpan permanen di komputer Anda selama berkas tersebut tidak
+dihapus.
+
+<details>
+<summary>Menjalankan backend dan frontend secara terpisah (opsional)</summary>
+
+```bash
+# Terminal 1 — backend (port 4000)
+cd server
+npm install
+npm run dev
+
+# Terminal 2 — frontend (port 5173)
+cd client
+npm install
+npm run dev
+```
+</details>
 
 ## Akun demo
 
